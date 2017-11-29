@@ -61,6 +61,7 @@ class AStar:
 
             if problem.isGoal(next_state) :
                 path = self._reconstructPath(parents, next_state)
+                return path, g_score[next_state], self.heuristic.estimate(problem, next_state), developed
 
             for succ, cost in problem.expandWithCosts(next_state) :
                 new_g = g_score[next_state] + cost
@@ -94,7 +95,7 @@ class AStar:
         return min(open_set, key=open_set.get)
 
     # Reconstruct the path from a given goal by its parent and so on
-    def _reconstructPath(self, parents : list, goal : states.MapState):
+    def _reconstructPath(self, parents: list, goal: states.MapState):
         path = []
         node = goal
 
