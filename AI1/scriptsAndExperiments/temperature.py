@@ -8,7 +8,7 @@ def calculateProb(x_, t, array):
 colors = ['red', 'blue', 'green', 'orange', 'grey']
 X = np.array([400, 900, 390, 1000, 550])
 
-T = np.linspace(0.01, 5, 100, endpoint=True)
+T = np.linspace(0.01, 5.01, 100)
 
 result = []
 alpha = min(X)

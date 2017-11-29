@@ -25,11 +25,13 @@ class GreedyStochasticSolver(GreedySolver):
 
         # TODO: Fill the distribution in P as explained in the instructions.
 
-        P = self.calculateProb(X, self.T, X)
+        best_x = X[np.argsort(X)[:self._N]]
+        print('t is: {}'.format(self.T))
+        P = self.calculateProb(best_x, self.T, best_x)
 
-        alpha = min(P)
+        alpha = P[P != 0].min()
 
-        P = self.calculateProb(X/alpha, self.T, X/alpha)
+        P = self.calculateProb(best_x/alpha, self.T, best_x/alpha)
 
 
         # TODO : No changes in the rest of the code are needed
@@ -43,8 +45,8 @@ class GreedyStochasticSolver(GreedySolver):
     def _getNextState(self, problem, currState):
         successors = list(problem.expand(currState))
         P = self._getSuccessorsProbabilities(currState, successors)
-
-        nextIdx = np.random.choice(len(P), 1, P)[0]
+        nextIdx = np.random.choice(len(P), 1, p=list(P))[0]
+        print('sum of P is: {}'.format(sum(P)))
         # TODO : Choose the next state stochastically according to the calculated distribution.
         # You should look for a suitable function in numpy.random.
 

@@ -31,7 +31,8 @@ results = np.zeros((REPEATS,))
 print("Stochastic repeats:")
 for i in range(REPEATS):
     print("{}..".format(i+1), end=" ", flush=True)
-    results[i] = solver.solve(prob).getDistance() / 1000
+    result = solver.solve(prob).getDistance() / 1000
+    results[i] = result if result < results[i-1] or i == 0 else results[i-1]
 
 print("\nDone!")
 
@@ -40,7 +41,8 @@ from matplotlib import pyplot as plt
 
 plt.figure()
 
-plt.plot(np.arange(0, REPEATS, 1), results, '*r')
+plt.plot(np.arange(0, REPEATS, 1), results, 'blue')
+plt.plot(np.arange(0, REPEATS, 1), [greedyDistance]*REPEATS, 'yellow')
 
 plt.show()
 

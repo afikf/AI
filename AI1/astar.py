@@ -105,4 +105,4 @@ class AStar:
             path = [node] + path
             node = parents[node]
 
-        return path[::-1]
+        return path
