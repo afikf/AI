@@ -1,6 +1,9 @@
 import numpy as np
 import sys
 
+import states
+
+
 class AStar:
     cost = None
     heuristic = None
@@ -43,7 +46,7 @@ class AStar:
 
         # Initializes the required sets
         closed_set = set()  # The set of nodes already evaluated.
-        parents = {}  # The map of navigated nodes.
+        parents = {source: None}  # The map of navigated nodes.
 
         # Save the g_score and f_score for the open nodes
         g_score = {source: 0}
@@ -51,29 +54,32 @@ class AStar:
 
         developed = 0
 
-        while len(open_set) > 0 :
+        while len(open_set) > 0:
             next_state = self._getOpenStateWithLowest_f_score(open_set)
             del open_set[next_state]
             closed_set.add(next_state)
 
-            if problem.isGoal(next_state) :
-                return self._reconstructPath(parents, next_state), g_score[next_state], self.heuristic.estimate(problem, problem.initialState), developed
+            if problem.isGoal(next_state):
+                path = self._reconstructPath(parents, next_state)
+                result = path, g_score[next_state], self.heuristic.estimate(problem, next_state), developed
+                self._storeInCache(problem, result)
+                return result
 
-            for succ, cost in problem.expandWithCosts(next_state) :
+            for succ, cost in problem.expandWithCosts(next_state):
                 new_g = g_score[next_state] + cost
                 developed += 1
-                if succ in open_set.keys() :
-                    if new_g < g_score[succ] :
+                if succ in open_set.keys():
+                    if new_g < g_score[succ]:
                         g_score[succ] = new_g
                         parents[succ] = next_state
                         open_set[succ] = g_score[succ] + self.heuristic.estimate(problem, succ)
-                elif succ in closed_set :
-                    if new_g < g_score[succ] :
+                elif succ in closed_set:
+                    if new_g < g_score[succ]:
                         g_score[succ] = new_g
                         parents[succ] = next_state
                         open_set[succ] = g_score[succ] + self.heuristic.estimate(problem, succ)
                         closed_set.remove(succ)
-                else :
+                else:
                     open_set[succ] = new_g + self.heuristic.estimate(problem, succ)
                     g_score[succ] = new_g
                     parents[succ] = next_state
@@ -91,12 +97,12 @@ class AStar:
         return min(open_set, key=open_set.get)
 
     # Reconstruct the path from a given goal by its parent and so on
-    def _reconstructPath(self, parents, goal):
+    def _reconstructPath(self, parents: list, goal: states.MapState):
         path = []
         node = goal
 
         while node is not None:
-            path.append(node)
-            node = parents.get(node, None)
+            path = [node] + path
+            node = parents[node]
 
         return path[::-1]
