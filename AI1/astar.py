@@ -53,9 +53,8 @@ class AStar:
 
         while len(open_set) > 0 :
             next_state = self._getOpenStateWithLowest_f_score(open_set)
+            del open_set[next_state]
             closed_set.add(next_state)
-
-            print("I am here")
 
             if problem.isGoal(next_state) :
                 return self._reconstructPath(parents, next_state), g_score[next_state], self.heuristic.estimate(problem, problem.initialState, developed)
