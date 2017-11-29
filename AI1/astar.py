@@ -61,7 +61,6 @@ class AStar:
 
             if problem.isGoal(next_state) :
                 path = self._reconstructPath(parents, next_state)
-                return (path, g_score[next_state], self.heuristic.estimate(problem, problem.initialState), developed)
 
             for succ, cost in problem.expandWithCosts(next_state) :
                 new_g = g_score[next_state] + cost
