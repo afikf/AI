@@ -51,6 +51,34 @@ class AStar:
 
         developed = 0
 
+        while len(open_set) > 0 :
+            next_state = self._getOpenStateWithLowest_f_score(open_set)
+            closed_set.add(next_state)
+
+            print("I am here")
+
+            if problem.isGoal(next_state) :
+                return self._reconstructPath(parents, next_state), g_score[next_state], self.heuristic.estimate(problem, problem.initialState, developed)
+
+            for succ, cost in problem.expandWithCosts(next_state) :
+                new_g = g_score[next_state] + cost
+                developed += 1
+                if succ in open_set.keys() :
+                    if new_g < g_score[succ] :
+                        g_score[succ] = new_g
+                        parents[succ] = next_state
+                        open_set[succ] = g_score[succ] + self.heuristic.estimate(problem, succ)
+                elif succ in closed_set.keys() :
+                    if new_g < g_score[succ] :
+                        g_score[succ] = new_g
+                        parents[succ] = next_state
+                        open_set[succ] = g_score[succ] + self.heuristic.estimate(problem, succ)
+                        closed_set.remove(succ)
+                else :
+                    open_set[succ] = new_g + self.heuristic.estimate(problem, succ)
+                    g_score[succ] = new_g
+                    parents[succ] = next_state
+
         # TODO : Implement astar.
         # Tips:
         # - To get the successor states of a state with their costs, use: problem.expandWithCosts(state, self.cost)
@@ -58,13 +86,18 @@ class AStar:
         # - Don't forget to cache your result between returning it - TODO
 
         # TODO : VERY IMPORTANT: must return a tuple of (path, g_score(goal), h(I), developed)
-        return ([], -1, -1, developed)
+        return [], -1, -1, developed
 
     def _getOpenStateWithLowest_f_score(self, open_set):
-        # TODO : Implement
-        raise NotImplementedError
+        return min(open_set, key=open_set.get)
 
     # Reconstruct the path from a given goal by its parent and so on
     def _reconstructPath(self, parents, goal):
-        # TODO : Implement
-        raise NotImplementedError
+        path = []
+        node = goal
+
+        while node is not None:
+            path.append(node)
+            node = parents[node]
+
+        return path
