@@ -54,30 +54,32 @@ class AStar:
 
         developed = 0
 
-        while len(open_set) > 0 :
+        while len(open_set) > 0:
             next_state = self._getOpenStateWithLowest_f_score(open_set)
             del open_set[next_state]
             closed_set.add(next_state)
 
-            if problem.isGoal(next_state) :
+            if problem.isGoal(next_state):
                 path = self._reconstructPath(parents, next_state)
-                return path, g_score[next_state], self.heuristic.estimate(problem, next_state), developed
+                result = path, g_score[next_state], self.heuristic.estimate(problem, next_state), developed
+                self._storeInCache(problem, result)
+                return result
 
-            for succ, cost in problem.expandWithCosts(next_state) :
+            for succ, cost in problem.expandWithCosts(next_state):
                 new_g = g_score[next_state] + cost
                 developed += 1
-                if succ in open_set.keys() :
-                    if new_g < g_score[succ] :
+                if succ in open_set.keys():
+                    if new_g < g_score[succ]:
                         g_score[succ] = new_g
                         parents[succ] = next_state
                         open_set[succ] = g_score[succ] + self.heuristic.estimate(problem, succ)
-                elif succ in closed_set :
-                    if new_g < g_score[succ] :
+                elif succ in closed_set:
+                    if new_g < g_score[succ]:
                         g_score[succ] = new_g
                         parents[succ] = next_state
                         open_set[succ] = g_score[succ] + self.heuristic.estimate(problem, succ)
                         closed_set.remove(succ)
-                else :
+                else:
                     open_set[succ] = new_g + self.heuristic.estimate(problem, succ)
                     g_score[succ] = new_g
                     parents[succ] = next_state

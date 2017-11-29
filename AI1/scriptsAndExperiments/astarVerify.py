@@ -30,7 +30,7 @@ plt.title("Showing paths")
 
 totalDistance = 0
 # Plot each order at a time
-for i,order in enumerate(prob.orders):
+for i, order in enumerate(prob.orders):
     # Create a sub-problem to solve with A* (getting the optimal path for each order separately)
     subProblem = MapProblem(roads, order[0], order[1])
 

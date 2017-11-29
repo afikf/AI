@@ -10,6 +10,10 @@ class ActualDistanceCost(Cost):
         self.astar = astar
 
     def compute(self, fromState, toState):
+        """
+
+        :rtype:
+        """
         from problems import MapProblem
 
         mapSubProblem = MapProblem(self.roads, fromState.junctionIdx, toState.junctionIdx)

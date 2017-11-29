@@ -37,8 +37,15 @@ print("\nDone!")
 
 # TODO : Part1 - Plot the diagram required in the instructions
 from matplotlib import pyplot as plt
-raise NotImplementedError
 
+plt.figure()
+
+plt.plot(np.arange(0, REPEATS, 1), results, '*r')
+
+plt.show()
+
+averageRes = np.average(results)
+standardDevRes = np.std(results)
 
 # TODO : Part2 - Remove the exit and perform the t-test
 raise NotImplementedError
