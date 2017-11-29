@@ -1,6 +1,9 @@
 import numpy as np
 import sys
 
+import states
+
+
 class AStar:
     cost = None
     heuristic = None
@@ -43,7 +46,7 @@ class AStar:
 
         # Initializes the required sets
         closed_set = set()  # The set of nodes already evaluated.
-        parents = {}  # The map of navigated nodes.
+        parents = {source: None}  # The map of navigated nodes.
 
         # Save the g_score and f_score for the open nodes
         g_score = {source: 0}
@@ -57,7 +60,8 @@ class AStar:
             closed_set.add(next_state)
 
             if problem.isGoal(next_state) :
-                return self._reconstructPath(parents, next_state), g_score[next_state], self.heuristic.estimate(problem, problem.initialState, developed)
+                path = self._reconstructPath(parents, next_state)
+                return (path, g_score[next_state], self.heuristic.estimate(problem, problem.initialState), developed)
 
             for succ, cost in problem.expandWithCosts(next_state) :
                 new_g = g_score[next_state] + cost
@@ -91,12 +95,12 @@ class AStar:
         return min(open_set, key=open_set.get)
 
     # Reconstruct the path from a given goal by its parent and so on
-    def _reconstructPath(self, parents, goal):
+    def _reconstructPath(self, parents : list, goal : states.MapState):
         path = []
         node = goal
 
         while node is not None:
-            path.append(node)
+            path = [node] + path
             node = parents[node]
 
         return path
