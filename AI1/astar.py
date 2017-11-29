@@ -57,7 +57,7 @@ class AStar:
             closed_set.add(next_state)
 
             if problem.isGoal(next_state) :
-                return self._reconstructPath(parents, next_state), g_score[next_state], self.heuristic.estimate(problem, problem.initialState, developed)
+                return self._reconstructPath(parents, next_state), g_score[next_state], self.heuristic.estimate(problem, problem.initialState), developed
 
             for succ, cost in problem.expandWithCosts(next_state) :
                 new_g = g_score[next_state] + cost
@@ -97,6 +97,6 @@ class AStar:
 
         while node is not None:
             path.append(node)
-            node = parents[node]
+            node = parents.get(node, None)
 
         return path
