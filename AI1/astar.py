@@ -99,4 +99,4 @@ class AStar:
             path.append(node)
             node = parents.get(node, None)
 
-        return path
+        return path[::-1]
