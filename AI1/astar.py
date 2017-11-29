@@ -68,7 +68,7 @@ class AStar:
                         g_score[succ] = new_g
                         parents[succ] = next_state
                         open_set[succ] = g_score[succ] + self.heuristic.estimate(problem, succ)
-                elif succ in closed_set.keys() :
+                elif succ in closed_set :
                     if new_g < g_score[succ] :
                         g_score[succ] = new_g
                         parents[succ] = next_state
