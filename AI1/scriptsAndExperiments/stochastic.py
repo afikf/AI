@@ -32,7 +32,7 @@ print("Stochastic repeats:")
 for i in range(REPEATS):
     print("{}..".format(i+1), end=" ", flush=True)
     result = solver.solve(prob).getDistance() / 1000
-    results[i] = result if result < results[i-1] or i == 0 else results[i-1]
+    results[i] = result if i == 0 or result < results[i-1] else results[i-1]
 
 print("\nDone!")
 
