@@ -7,7 +7,7 @@ class GreedyStochasticSolver(GreedySolver):
     _N = None
 
     def calculateProb(self, x_, t, array):
-        return x_**(-1/t)/sum([x_i**(-1/t) for x_i in array])
+        return x_**(-1/t)/sum(array**(-1/t))
 
     def __init__(self, roads, astar, scorer, initialTemperature, temperatureDecayFactor, topNumToConsider):
         super().__init__(roads, astar, scorer)
