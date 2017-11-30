@@ -6,8 +6,9 @@ class GreedyStochasticSolver(GreedySolver):
     _INITIAL_TEMPERATURE = None
     _N = None
 
-    def calculateProb(self, x_, t, array):
-        return x_**(-1/t)/sum(array**(-1/t))
+    def calculateProb(self, x_, array):
+        len_array = len(array)
+        return x_/(np.dot(np.ones((1, len_array)), array.reshape((len_array, 1)))[0][0])
 
     def __init__(self, roads, astar, scorer, initialTemperature, temperatureDecayFactor, topNumToConsider):
         super().__init__(roads, astar, scorer)
@@ -24,15 +25,11 @@ class GreedyStochasticSolver(GreedySolver):
         P = np.zeros((len(successors),))
 
         # TODO: Fill the distribution in P as explained in the instructions.
+        smallest = X[np.argsort(X)[:self._N]]
+        alpha = smallest.min()
+        best_x = np.array([(i/alpha)**(-1/self.T) if i in smallest else 0 for i in X])
 
-        best_x = X[np.argsort(X)[:self._N]]
-        print('t is: {}'.format(self.T))
-        P = self.calculateProb(best_x, self.T, best_x)
-
-        alpha = P[P != 0].min()
-
-        P = self.calculateProb(best_x/alpha, self.T, best_x/alpha)
-
+        P = self.calculateProb(best_x, best_x)
 
         # TODO : No changes in the rest of the code are needed
 
@@ -46,7 +43,6 @@ class GreedyStochasticSolver(GreedySolver):
         successors = list(problem.expand(currState))
         P = self._getSuccessorsProbabilities(currState, successors)
         nextIdx = np.random.choice(len(P), 1, p=list(P))[0]
-        print('sum of P is: {}'.format(sum(P)))
         # TODO : Choose the next state stochastically according to the calculated distribution.
         # You should look for a suitable function in numpy.random.
 
