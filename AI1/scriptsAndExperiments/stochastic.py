@@ -6,6 +6,8 @@ from problems import BusProblem
 from costs import L2DistanceCost
 from heuristics import L2DistanceHeuristic
 import numpy as np
+import scipy as sp
+from scipy import stats
 
 REPEATS = 150
 
@@ -28,11 +30,12 @@ solver = GreedyStochasticSolver(roads, mapAstar, scorer,
                                 Consts.STOCH_TEMPERATURE_DECAY_FUNCTION,
                                 Consts.STOCH_TOP_SCORES_TO_CONSIDER)
 results = np.zeros((REPEATS,))
+results_for_graph = results.copy()
 print("Stochastic repeats:")
 for i in range(REPEATS):
     print("{}..".format(i+1), end=" ", flush=True)
-    result = solver.solve(prob).getDistance() / 1000
-    results[i] = result if i == 0 or result < results[i-1] else results[i-1]
+    results[i] = solver.solve(prob).getDistance() / 1000
+    results_for_graph[i] = results[i] if i == 0 or results[i] < results_for_graph[i-1] else results_for_graph[i-1]
 
 print("\nDone!")
 
@@ -41,13 +44,19 @@ from matplotlib import pyplot as plt
 
 plt.figure()
 
-plt.plot(np.arange(0, REPEATS, 1), results, 'blue')
+plt.plot(np.arange(0, REPEATS, 1), results_for_graph, 'blue')
 plt.plot(np.arange(0, REPEATS, 1), [greedyDistance]*REPEATS, 'yellow')
 
 plt.show()
 
-averageRes = np.average(results)
-standardDevRes = np.std(results)
+averageRes = np.average(results_for_graph)
+standardDevRes = np.std(results_for_graph)
+
+print("Average of x_i is {:f}\nStandart deviation of x_i is {:f}\n".format(averageRes, standardDevRes))
+
+statistic, p_value = stats.ttest_1samp(results_for_graph, greedyDistance)
+
+print("p-value is {:f}\n".format(p_value))
 
 # TODO : Part2 - Remove the exit and perform the t-test
 raise NotImplementedError

@@ -8,11 +8,10 @@ class GreedyBestFirstSolver(GreedySolver):
     # Find the next state to develop
     def _getNextState(self, problem, currState):
         successors = list(problem.expand(currState))
-        bestIdx = None
         # TODO : Return the next state
 
         def func(state):
-            return self._scorer.compute(currState, s+tate)
+            return self._scorer.compute(currState, state)
 
         bestIdx = successors.index(min(successors, key=func))
 
