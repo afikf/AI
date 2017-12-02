@@ -24,14 +24,14 @@ class GreedyStochasticSolver(GreedySolver):
         # Initialize an all-zeros vector for the distribution
         P = np.zeros((len(successors),))
 
-        # TODO: Fill the distribution in P as explained in the instructions.
         smallest = X[np.argsort(X)[:self._N]]
         alpha = smallest.min()
+
+        # Take only the smallest N x's
         best_x = np.array([(i/alpha)**(-1/self.T) if i in smallest else 0 for i in X])
 
+        # Normalize best_x
         P = self.calculateProb(best_x, best_x)
-
-        # TODO : No changes in the rest of the code are needed
 
         # Update the temperature
         self.T *= self._TEMPERATURE_DECAY_FACTOR

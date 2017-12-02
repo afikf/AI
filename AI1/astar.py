@@ -61,13 +61,14 @@ class AStar:
 
             if problem.isGoal(next_state):
                 path = self._reconstructPath(parents, next_state)
-                result = path, g_score[next_state], self.heuristic.estimate(problem, next_state), developed
+                result = path, g_score[next_state], self.heuristic.estimate(problem, problem.initialState), developed
                 self._storeInCache(problem, result)
                 return result
 
-            for succ, cost in problem.expandWithCosts(next_state):
-                new_g = g_score[next_state] + cost
-                developed += 1
+            developed += 1
+            for succ, cost_val in problem.expandWithCosts(next_state, self.cost):
+                new_g = g_score[next_state] + cost_val
+
                 if succ in open_set.keys():
                     if new_g < g_score[succ]:
                         g_score[succ] = new_g

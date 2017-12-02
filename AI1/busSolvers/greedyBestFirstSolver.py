@@ -12,7 +12,7 @@ class GreedyBestFirstSolver(GreedySolver):
 
         def func(state):
             return self._scorer.compute(currState, state)
-
+        # Pick the closest vertex
         bestIdx = successors.index(min(successors, key=func))
 
         if bestIdx is None:

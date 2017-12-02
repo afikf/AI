@@ -88,13 +88,18 @@ class BusProblem(Problem):
     # Get the new state created after going from one state to a new location (on map)
     def _getNewStateAtLoc(self, previousState, newLoc):
 
+        # Copy the lists from the father state
         newWaiting = previousState.waitingOrders.copy()
         newOnBus = previousState.ordersOnBus.copy()
         newFinished = previousState.finishedOrders.copy()
+
+        # Remove all the orders that ends at the current vertex from the bus list
         for order in previousState.ordersOnBus:
             if order[1] == newLoc:
                 newOnBus.remove(order)
                 newFinished.append(order)
+
+        # Remove all the orders that starts at the current vertex from the waiting list
         for order in previousState.waitingOrders:
             if order[0] == newLoc:
                 newWaiting.remove(order)

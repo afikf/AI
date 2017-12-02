@@ -14,8 +14,11 @@ result = []
 alpha = min(X)
 plt.figure()
 for idx, x in enumerate(X):
-    alpha = min(calculateProb(x, T, X))
     plt.plot(T, calculateProb(x/alpha, T, X/alpha), color=colors[idx], label=str(x))
+plt.grid()
+plt.title("Probability vs Temperature")
+plt.xlabel("Temperature")
+plt.ylabel("Probability")
 
 plt.legend()
 

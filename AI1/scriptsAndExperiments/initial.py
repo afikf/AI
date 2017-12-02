@@ -11,7 +11,6 @@ import numpy as np
 roads = load_map_from_csv(Consts.getDataFilePath("israel.csv"))
 prob = BusProblem.load(Consts.getDataFilePath("TLV_5.in"))
 
-# TODO - Fix the missing parts in the following code
 # Print details of a random order
 order = prob.orders[np.random.choice(np.arange(len(prob.orders)))]
 print("One of the orders is from junction #{} at ({}, {}) to #{} at ({}, {})".format(

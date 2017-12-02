@@ -35,6 +35,7 @@ print("Stochastic repeats:")
 for i in range(REPEATS):
     print("{}..".format(i+1), end=" ", flush=True)
     results[i] = solver.solve(prob).getDistance() / 1000
+    # Take only the lower values to the graph
     results_for_graph[i] = results[i] if i == 0 or results[i] < results_for_graph[i-1] else results_for_graph[i-1]
 
 print("\nDone!")
@@ -44,19 +45,27 @@ from matplotlib import pyplot as plt
 
 plt.figure()
 
-plt.plot(np.arange(0, REPEATS, 1), results_for_graph, 'blue')
-plt.plot(np.arange(0, REPEATS, 1), [greedyDistance]*REPEATS, 'yellow')
+plt.plot(np.arange(0, REPEATS, 1), results_for_graph, 'blue', label="Greedy Stochastic")
+plt.plot(np.arange(0, REPEATS, 1), [greedyDistance]*REPEATS, 'yellow', label="Greedy Best First")
+
+plt.legend()
+plt.grid()
+
+plt.title("Stochastic and Determinist greedy solvers")
+plt.xlabel("Iterations")
+plt.ylabel("Total path length")
 
 plt.show()
 
-averageRes = np.average(results_for_graph)
-standardDevRes = np.std(results_for_graph)
-
-print("Average of x_i is {:f}\nStandart deviation of x_i is {:f}\n".format(averageRes, standardDevRes))
-
-statistic, p_value = stats.ttest_1samp(results_for_graph, greedyDistance)
-
-print("p-value is {:f}\n".format(p_value))
-
 # TODO : Part2 - Remove the exit and perform the t-test
-raise NotImplementedError
+
+# Calculate average and standard deviation
+averageRes = np.average(results)
+standardDevRes = np.std(results)
+
+print("Average of x_i is {:e}\nStandart deviation of x_i is {:e}\n".format(averageRes, standardDevRes))
+
+# Run the t-test
+statistic, p_value = stats.ttest_1samp(results, greedyDistance)
+
+print("p-value is {:e}\n".format(p_value))
