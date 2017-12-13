@@ -116,7 +116,7 @@ class MiniMaxAlgorithm:
         cur_min = INFINITY
         for move in possible_moves:
             next_state = copy.deepcopy(state)
-            state.perform_move(move[0], move[1])
+            next_state.perform_move(move[0], move[1])
             value, cur_move = self.search(next_state, depth - 1, True)
             cur_min = min(cur_min, value)
         return cur_min, None
@@ -149,4 +149,38 @@ class MiniMaxWithAlphaBetaPruning:
         :param maximizing_player: Whether this is a max node (True) or a min node (False).
         :return: A tuple: (The alpha-beta algorithm value, The move in case of max node or None in min mode)
         """
-        return self.utility(state), None
+
+        possible_moves = state.get_possible_moves()
+
+        # Check if we need to end the game. The game will be ended if:
+        # 1. It is a goal state
+        # 2. Out of time
+        # 3. It is selective depth game, stop if it is too deep
+        # 4. No possible moves
+        if not self.selective_deepening(state) or self.no_more_time() or depth == 0 or 0 == len(possible_moves):
+            return self.utility(state), None
+
+        if maximizing_player:
+            cur_max = -1*INFINITY
+            max_move = None
+            for move in possible_moves:
+                next_state = copy.deepcopy(state)
+                next_state.perform_move(move[0], move[1])
+                value, cur_move = self.search(next_state, depth - 1, alpha, beta, False)
+                if value > cur_max:
+                    cur_max = value
+                    max_move = move
+                if cur_max >= beta:
+                    return INFINITY, move
+            return cur_max, max_move
+
+        # minimizing player
+        cur_min = INFINITY
+        for move in possible_moves:
+            next_state = copy.deepcopy(state)
+            next_state.perform_move(move[0], move[1])
+            value, cur_move = self.search(next_state, depth - 1, alpha, beta, True)
+            cur_min = min(cur_min, value)
+            if cur_min <= alpha:
+                return -INFINITY, None
+        return cur_min, None
