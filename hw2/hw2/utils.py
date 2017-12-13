@@ -98,29 +98,27 @@ class MiniMaxAlgorithm:
         # 3. It is selective depth game, stop if it is too deep
         # 4. No possible moves
         if not self.selective_deepening(state) or self.no_more_time() or depth == 0 or 0 == len(possible_moves):
-            if maximizing_player and depth > 0:
-                return self.utility(state), state
-            else:
-                return self.utility(state), None
+            return self.utility(state), None
 
         if maximizing_player:
-            cur_max = None
+            cur_max = -1*INFINITY
             max_move = None
-            for child in possible_moves:
-                value, move = self.search(child, depth - 1, False)
-                if cur_max is None or value > cur_max:
+            for move in possible_moves:
+                next_state = copy.deepcopy(state)
+                state.perform_move(move[0], move[1])
+                value, cur_move = self.search(next_state, depth - 1, False)
+                if value > cur_max:
                     cur_max = value
                     max_move = move
-            return cur_max, None
+            return cur_max, max_move
 
         # minimizing player
-        cur_min = None
-        for child in possible_moves:
-            value, move = self.search(child, depth - 1, True)
-            if cur_min is None:
-                cur_min = value
-            else:
-                cur_min = min(cur_min, value)
+        cur_min = INFINITY
+        for move in possible_moves:
+            next_state = copy.deepcopy(state)
+            state.perform_move(move[0], move[1])
+            value, cur_move = self.search(next_state, depth - 1, True)
+            cur_min = min(cur_min, value)
         return cur_min, None
 
 class MiniMaxWithAlphaBetaPruning:
