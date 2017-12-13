@@ -105,7 +105,7 @@ class MiniMaxAlgorithm:
             max_move = None
             for move in possible_moves:
                 next_state = copy.deepcopy(state)
-                state.perform_move(move[0], move[1])
+                next_state.perform_move(move[0], move[1])
                 value, cur_move = self.search(next_state, depth - 1, False)
                 if value > cur_max:
                     cur_max = value
