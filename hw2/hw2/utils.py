@@ -89,8 +89,39 @@ class MiniMaxAlgorithm:
         :param maximizing_player: Whether this is a max node (True) or a min node (False).
         :return: A tuple: (The min max algorithm value, The move in case of max node or None in min mode)
         """
-        return self.utility(state), None
 
+        possible_moves = state.get_possible_moves()
+
+        # Check if we need to end the game. The game will be ended if:
+        # 1. It is a goal state
+        # 2. Out of time
+        # 3. It is selective depth game, stop if it is too deep
+        # 4. No possible moves
+        if not self.selective_deepening(state) or self.no_more_time() or depth == 0 or 0 == len(possible_moves):
+            if maximizing_player:
+                return self.utility(state), state
+            else:
+                return self.utility(state), None
+
+        if maximizing_player:
+            cur_max = None
+            max_move = None
+            for child in possible_moves:
+                value, move = self.search(child, depth - 1, False)
+                if cur_max is None or value > cur_max:
+                    cur_max = value
+                    max_move = move
+            return cur_max, None
+
+        # minimizing player
+        cur_min = None
+        for child in possible_moves:
+            value, move = self.search(child, depth - 1, True)
+            if cur_min is None:
+                cur_min = value
+            else:
+                cur_min = min(cur_min, value)
+        return cur_min, None
 
 class MiniMaxWithAlphaBetaPruning:
 
