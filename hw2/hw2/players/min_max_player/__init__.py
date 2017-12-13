@@ -20,15 +20,14 @@ class Player(AbstractPlayer):
 
     def no_more_time(self):
         self.time_for_current_move -= (time.time() - self.clock)
-        self.time_per_k_turns -= (time.time() - self.clock)
+        self.time_remaining_in_round -= (time.time() - self.clock)
         self.clock = time.time()
-        if self.time_for_current_move <= 0:
+        if self.time_for_current_move <= 0.05:
             return True
         return False
 
 
     def get_move(self, game_state, possible_moves):
-        stop = False
         depth = 0
         self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
         self.clock = time.time()
