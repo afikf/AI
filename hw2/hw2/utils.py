@@ -98,7 +98,7 @@ class MiniMaxAlgorithm:
         # 3. It is selective depth game, stop if it is too deep
         # 4. No possible moves
         if not self.selective_deepening(state) or self.no_more_time() or depth == 0 or 0 == len(possible_moves):
-            if maximizing_player:
+            if maximizing_player and depth > 0:
                 return self.utility(state), state
             else:
                 return self.utility(state), None
