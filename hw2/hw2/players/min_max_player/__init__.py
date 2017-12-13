@@ -2,7 +2,7 @@ import time
 from Reversi.consts import X_PLAYER
 from abstract import AbstractPlayer
 from utils import MiniMaxAlgorithm
-from players.simple_player import Player as simplePlayer
+from players.better_player import Player as simplePlayer
 
 class Player(AbstractPlayer):
     def __init__(self, setup_time, player_color, time_per_k_turns, k):
