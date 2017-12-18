@@ -3,6 +3,7 @@ from Reversi.consts import X_PLAYER
 from abstract import AbstractPlayer
 from utils import MiniMaxAlgorithm
 from players.better_player import Player as simplePlayer
+import abstract
 
 class Player(AbstractPlayer):
     def __init__(self, setup_time, player_color, time_per_k_turns, k):
@@ -17,9 +18,11 @@ class Player(AbstractPlayer):
         self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
 
         self.simple = simplePlayer(setup_time, player_color, time_per_k_turns, k)
-
         self.algorithm = MiniMaxAlgorithm(utility=self.simple.utility, my_color=self.color,
                                           no_more_time=self.no_more_time, selective_deepening=self.alwaysTrue)
+
+    def __repr__(self):
+        return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- min_max_player')
 
     def no_more_time(self):
         self.time_for_current_move -= (time.time() - self.clock)

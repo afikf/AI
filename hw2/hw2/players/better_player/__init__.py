@@ -14,7 +14,7 @@ class Player(abstract.AbstractPlayer):
         self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
 
     def __repr__(self):
-        return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), 'better')
+        return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- better_player')
 
     def get_move(self, game_state, possible_moves):
         self.clock = time.time()
