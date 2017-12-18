@@ -60,5 +60,5 @@ class Player(AbstractPlayer):
         else:
             self.turns_remaining_in_round -= 1
 
-        return best_move
+        return best_move if best_move is not None else possible_moves[0]
 
