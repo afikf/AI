@@ -25,20 +25,24 @@ class Player(AbstractPlayer):
         return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- min_max_player')
 
     def no_more_time(self):
-        self.time_for_current_move -= (time.time() - self.clock)
-        self.time_remaining_in_round -= (time.time() - self.clock)
+        time_passed = (time.time() - self.clock)
+        self.time_for_current_move -= time_passed
+        self.time_remaining_in_round -= time_passed
         self.clock = time.time()
-        if self.time_for_current_move <= 0.05:
+        if self.time_for_current_move <= 0.05 or self.time_remaining_in_round <= 0.05:
             return True
         return False
 
     def alwaysTrue(self, state):
         return True
 
+    def time_for_step(self):
+        sum_of_remaining_turns = sum(range(self.turns_remaining_in_round+1))
+        return self.time_remaining_in_round*(self.turns_remaining_in_round/sum_of_remaining_turns)-0.05
 
     def get_move(self, game_state, possible_moves):
         depth = 0
-        self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
+        self.time_for_current_move = self.time_for_step()
         self.clock = time.time()
 
         best_move = None
