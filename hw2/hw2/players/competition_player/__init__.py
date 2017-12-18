@@ -108,7 +108,12 @@ class Player(abstract.AbstractPlayer):
 
     def utility(self, state):
         if len(state.get_possible_moves()) == 0:
-            return INFINITY if state.curr_player != self.color else -INFINITY
+            winner = state.get_winner()
+            if winner == self.color:
+                return INFINITY
+            else:
+                return -INFINITY
+            
         my_in_corner = 0
         opp_in_corner = 0
         my_front = 0
