@@ -1,10 +1,12 @@
 import abstract
 from utils import INFINITY, run_with_limited_time, ExceededTimeError
-from Reversi.consts import EM, OPPONENT_COLOR, BOARD_COLS, BOARD_ROWS, O_PLAYER, X_PLAYER, NUM_OF_MOVES_IN_OPENING_BOOK
+from Reversi.consts import *
 import time
 import copy
 import pickle
 from collections import defaultdict
+from utils import MiniMaxWithAlphaBetaPruning
+from utils import MiniMaxAlgorithm
 
 class Player(abstract.AbstractPlayer):
     def __init__(self, setup_time, player_color, time_per_k_turns, k):
@@ -13,8 +15,10 @@ class Player(abstract.AbstractPlayer):
         self.turns_remaining_in_round = self.k
         self.time_remaining_in_round = self.time_per_k_turns
         self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
+        self.algorithm = MiniMaxAlgorithm(utility=self.utility, my_color=self.color, no_more_time=self.no_more_time,
+                                          selective_deepening=self.alwaysTrue)
 
-        with open('opening_book_better.pkl', 'rb') as source:
+        with open('opening_book.pkl', 'rb') as source:
             self.opening_book = pickle.load(source)
 
         self.last_board = []
@@ -34,7 +38,52 @@ class Player(abstract.AbstractPlayer):
         self.moves = ""
 
     def __repr__(self):
-        return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- better_player')
+        return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- competition_player')
+
+    def alwaysTrue(self, state):
+        return True
+
+    def no_more_time(self):
+        time_passed = (time.time() - self.clock)
+        self.time_for_current_move -= time_passed
+        self.time_remaining_in_round -= time_passed
+        self.clock = time.time()
+        if self.time_for_current_move <= 0.05 or self.time_remaining_in_round <= 0.05:
+            return True
+        return False
+
+    def time_for_step(self):
+        return self.split_time_equally(PRECENTAGE_OF_TIME_TO_SPLIT_EQUALY*self.time_remaining_in_round) + \
+               self.split_time_not_equally(PRECENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALY*self.time_remaining_in_round) - 0.05
+
+    def split_time_equally(self, time_remaining):
+        return time_remaining/self.turns_remaining_in_round
+
+    def split_time_not_equally(self, time_remaining):
+        sum_of_remaining_turns = sum(range(self.turns_remaining_in_round + 1))
+        return time_remaining * (self.turns_remaining_in_round / sum_of_remaining_turns)
+
+    def get_move(self, game_state, possible_moves):
+        depth = 0
+        self.time_for_current_move = self.time_for_step()
+        self.clock = time.time()
+
+        best_move = None
+        max_value = 0
+        while not self.no_more_time():
+            depth += 1
+            value, move = self.algorithm.search(game_state, depth, True)
+            if best_move is None or value > max_value:
+                max_value = value
+                best_move = move
+
+        if self.turns_remaining_in_round == 1:
+            self.turns_remaining_in_round = self.k
+            self.time_remaining_in_round = self.time_per_k_turns
+        else:
+            self.turns_remaining_in_round -= 1
+
+        return best_move if best_move is not None else possible_moves[0]
 
     def find_oposit_move(self, game_state):
         for i in range(BOARD_COLS):
@@ -55,41 +104,6 @@ class Player(abstract.AbstractPlayer):
 
         return a1_to_xy(self.opening_book[self.moves]) if self.moves in self.opening_book else None
 
-    def get_move(self, game_state, possible_moves):
-        self.clock = time.time()
-        self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
-        if len(possible_moves) == 1:
-            return possible_moves[0]
-
-        best_move = self.opening_move(game_state)
-
-        if best_move is None:
-            best_move = possible_moves[0]
-            next_state = copy.deepcopy(game_state)
-            next_state.perform_move(best_move[0], best_move[1])
-            # Choosing an arbitrary move
-            # Get the best move according the utility function
-            for move in possible_moves:
-                new_state = copy.deepcopy(game_state)
-                new_state.perform_move(move[0], move[1])
-                if self.utility(new_state) > self.utility(next_state):
-                    next_state = new_state
-                    best_move = move
-
-        if self.turns_remaining_in_round == 1:
-            self.turns_remaining_in_round = self.k
-            self.time_remaining_in_round = self.time_per_k_turns
-        else:
-            self.turns_remaining_in_round -= 1
-            self.time_remaining_in_round -= (time.time() - self.clock)
-
-        game_state.perform_move(best_move[0], best_move[1])
-        self.last_board = game_state.board
-
-        self.moves += xy_to_a1(best_move)
-
-        return best_move
-
     def utility(self, state):
         if len(state.get_possible_moves()) == 0:
             return INFINITY if state.curr_player != self.color else -INFINITY
@@ -102,7 +116,6 @@ class Player(abstract.AbstractPlayer):
         d = 0
         my_close_to_corner = 0
         opp_close_to_corner = 0
-        close_to_corner = 0
         opp_state = copy.deepcopy(state)
         X = [-1, -1, 0, 1, 1, 1, 0, -1]
         Y = [0, 1, 1, 1, 0, -1, -1, -1]
