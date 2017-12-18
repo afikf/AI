@@ -25,3 +25,5 @@ OPPONENT_COLOR = {
 #===============================================================================
 
 NUM_OF_MOVES_IN_OPENING_BOOK = 10
+PRECENTAGE_OF_TIME_TO_SPLIT_EQUALY = 0
+PRECENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALY = 1 - PRECENTAGE_OF_TIME_TO_SPLIT_EQUALY
