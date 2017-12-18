@@ -59,6 +59,7 @@ class Player(AbstractPlayer):
 
         best_move = None
         max_value = 0
+        searched_all_tree = False
         while not self.no_more_time() and not searched_all_tree:
             depth += 1
             [value, move, searched_all_tree] = self.algorithm.search(game_state, depth, True)
