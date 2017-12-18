@@ -1,8 +1,9 @@
 import abstract
 from utils import INFINITY, run_with_limited_time, ExceededTimeError
-from Reversi.consts import EM, OPPONENT_COLOR, BOARD_COLS, BOARD_ROWS, O_PLAYER, X_PLAYER
+from Reversi.consts import EM, OPPONENT_COLOR, BOARD_COLS, BOARD_ROWS, O_PLAYER, X_PLAYER, NUM_OF_MOVES_IN_OPENING_BOOK
 import time
 import copy
+import pickle
 from collections import defaultdict
 
 class Player(abstract.AbstractPlayer):
@@ -13,8 +14,46 @@ class Player(abstract.AbstractPlayer):
         self.time_remaining_in_round = self.time_per_k_turns
         self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
 
+        with open('opening_book.pkl', 'rb') as source:
+            self.opening_book = pickle.load(source)
+
+        self.last_board = []
+        for i in range(BOARD_COLS):
+            self.last_board.append([EM] * BOARD_ROWS)
+
+        for x in range(BOARD_COLS):
+            for y in range(BOARD_ROWS):
+                self.last_board[x][y] = EM
+
+        # Starting pieces:
+        self.last_board[3][3] = X_PLAYER
+        self.last_board[3][4] = O_PLAYER
+        self.last_board[4][3] = O_PLAYER
+        self.last_board[4][4] = X_PLAYER
+
+        self.moves = ""
+
     def __repr__(self):
         return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- better_player')
+
+    def find_oposit_move(self, game_state):
+        for i in range(BOARD_COLS):
+            for j in range(BOARD_ROWS):
+                if self.last_board[i][j] == EM and game_state.board[i][j] != EM:
+                    return i, j
+        return None
+
+    def opening_move(self, game_state):
+        if len(self.moves)/2 > NUM_OF_MOVES_IN_OPENING_BOOK:
+            return None
+        other_player_move = self.find_oposit_move(game_state)
+        if other_player_move is None:
+            other_player_move_as_str = ""
+        else:
+            other_player_move_as_str = xy_to_a1(other_player_move)
+        self.moves += other_player_move_as_str
+
+        return a1_to_xy(self.opening_book[self.moves]) if self.moves in self.opening_book else None
 
     def get_move(self, game_state, possible_moves):
         self.clock = time.time()
@@ -22,17 +61,20 @@ class Player(abstract.AbstractPlayer):
         if len(possible_moves) == 1:
             return possible_moves[0]
 
-        best_move = possible_moves[0]
-        next_state = copy.deepcopy(game_state)
-        next_state.perform_move(best_move[0], best_move[1])
-        # Choosing an arbitrary move
-        # Get the best move according the utility function
-        for move in possible_moves:
-            new_state = copy.deepcopy(game_state)
-            new_state.perform_move(move[0], move[1])
-            if self.utility(new_state) > self.utility(next_state):
-                next_state = new_state
-                best_move = move
+        best_move = self.opening_move(game_state)
+
+        if best_move is None:
+            best_move = possible_moves[0]
+            next_state = copy.deepcopy(game_state)
+            next_state.perform_move(best_move[0], best_move[1])
+            # Choosing an arbitrary move
+            # Get the best move according the utility function
+            for move in possible_moves:
+                new_state = copy.deepcopy(game_state)
+                new_state.perform_move(move[0], move[1])
+                if self.utility(new_state) > self.utility(next_state):
+                    next_state = new_state
+                    best_move = move
 
         if self.turns_remaining_in_round == 1:
             self.turns_remaining_in_round = self.k
@@ -40,6 +82,11 @@ class Player(abstract.AbstractPlayer):
         else:
             self.turns_remaining_in_round -= 1
             self.time_remaining_in_round -= (time.time() - self.clock)
+
+        game_state.perform_move(best_move[0], best_move[1])
+        self.last_board = game_state.board
+
+        self.moves += xy_to_a1(best_move)
 
         return best_move
 
@@ -103,4 +150,10 @@ class Player(abstract.AbstractPlayer):
         return corners + options + tiles
 
 
+def xy_to_a1(move):
+    return chr(ord('a') + int(move[0])) + str(int(move[1]) + 1)
+
+
+def a1_to_xy(move):
+    return ord(move[0]) - ord('a'), int(move[1]) - 1
 
