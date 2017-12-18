@@ -2,7 +2,7 @@ import time
 from Reversi.consts import *
 from abstract import AbstractPlayer
 from utils import MiniMaxAlgorithm
-from players.simple_player import Player as simplePlayer
+from players.better_player import Player as simplePlayer
 import abstract
 
 class Player(AbstractPlayer):
@@ -26,9 +26,9 @@ class Player(AbstractPlayer):
 
     def no_more_time(self):
         time_passed = (time.time() - self.clock)
+        self.clock = time.time()
         self.time_for_current_move -= time_passed
         self.time_remaining_in_round -= time_passed
-        self.clock = time.time()
         if self.time_for_current_move <= 0.05 or self.time_remaining_in_round <= 0.05:
             return True
         return False

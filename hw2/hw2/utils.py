@@ -175,6 +175,7 @@ class MiniMaxWithAlphaBetaPruning:
                 if value > cur_max:
                     cur_max = value
                     max_move = move
+                alpha = max(cur_max, alpha)
                 if cur_max >= beta:
                     return INFINITY, move, reached_leaves
             return cur_max, max_move, reached_leaves
@@ -186,6 +187,7 @@ class MiniMaxWithAlphaBetaPruning:
             next_state.perform_move(move[0], move[1])
             [value, _, cur_reached_leaves] = self.search(next_state, depth - 1, alpha, beta, True)
             cur_min = min(cur_min, value)
+            beta = min(cur_min, beta)
             reached_leaves = reached_leaves and cur_reached_leaves
             if cur_min <= alpha:
                 return -INFINITY, None, reached_leaves
