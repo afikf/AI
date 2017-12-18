@@ -16,7 +16,7 @@ class Player(abstract.AbstractPlayer):
         self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
         self.algorithm = MiniMaxWithAlphaBetaPruning(utility=self.utility, my_color=self.color,
                                                      no_more_time=self.no_more_time,
-                                                     selective_deepening=self.alwaysTrue)
+                                                     selective_deepening=self.selective_deeping)
 
         with open('opening_book_better.pkl', 'rb') as source:
             self.opening_book = pickle.load(source)
@@ -39,9 +39,6 @@ class Player(abstract.AbstractPlayer):
 
     def __repr__(self):
         return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- competition_player')
-
-    def alwaysTrue(self, state):
-        return True
 
     def no_more_time(self):
         time_passed = (time.time() - self.clock)
@@ -106,6 +103,14 @@ class Player(abstract.AbstractPlayer):
 
         return a1_to_xy(self.opening_book[self.moves]) if self.moves in self.opening_book else None
 
+    def selective_deeping(self, state):
+        sensitive_spots = [(0, 0), (0, 1), (1, 0), (1, 1), (0, 7), (0, 6), (1, 6), (1, 7), (7, 0), (6, 0), (6, 1),
+                                   (7, 1), (7, 7), (7, 6), (6, 7), (6, 6)]
+        for move in state.get_possible_moves():
+            if move in sensitive_spots:
+                return True
+        return False
+
     def utility(self, state):
         if len(state.get_possible_moves()) == 0:
             winner = state.get_winner()
@@ -113,7 +118,7 @@ class Player(abstract.AbstractPlayer):
                 return INFINITY
             else:
                 return -INFINITY
-            
+
         my_in_corner = 0
         opp_in_corner = 0
         my_front = 0

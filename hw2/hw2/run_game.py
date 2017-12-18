@@ -88,6 +88,8 @@ class GameRunner:
                 # Get move from player
                 move, run_time = utils.run_with_limited_time(
                     player.get_move, (copy.deepcopy(board_state), possible_moves), {}, remaining_run_time*1.5)
+
+                print(run_time)
                 
                 remaining_run_times[board_state.curr_player] -= run_time
                 if remaining_run_times[board_state.curr_player] < 0:

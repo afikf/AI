@@ -3,7 +3,7 @@ import time
 from Reversi.consts import PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY, PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY
 from abstract import AbstractPlayer
 from utils import MiniMaxWithAlphaBetaPruning
-from players.simple_player import Player as simplePlayer
+from players.better_player import Player as simplePlayer
 
 INFINITY = float(6000)
 
@@ -24,7 +24,7 @@ class Player(AbstractPlayer):
 
         self.algorithm = MiniMaxWithAlphaBetaPruning(utility=self.simple.utility, my_color=self.color,
                                                      no_more_time=self.no_more_time,
-                                                     selective_deepening=self.alwaysTrue)
+                                                     selective_deepening=self.selective_deeping)
     def no_more_time(self):
         time_passed = (time.time() - self.clock)
         self.clock = time.time()
@@ -45,8 +45,13 @@ class Player(AbstractPlayer):
         sum_of_remaining_turns = sum(range(self.turns_remaining_in_round + 1))
         return time_remaining * (self.turns_remaining_in_round / sum_of_remaining_turns)
 
-    def alwaysTrue(self, state):
-        return True
+    def selective_deeping(self, state):
+        sensitive_spots = [(0, 0), (0, 1), (1, 0), (1, 1), (0, 7), (0, 6), (1, 6), (1, 7), (7, 0), (6, 0), (6, 1),
+                                   (7, 1), (7, 7), (7, 6), (6, 7), (6, 6)]
+        for move in state.get_possible_moves():
+            if move in sensitive_spots:
+                return True
+        return False
 
     def get_move(self, game_state, possible_moves):
         depth = 0
@@ -56,7 +61,7 @@ class Player(AbstractPlayer):
         best_move = None
         max_value = 0
         reached_leaves = False
-        while not self.no_more_time() and not reached_leaves:
+        while not self.no_more_time():
             depth += 1
             [value, move, reached_leaves] = self.algorithm.search(game_state, depth, -INFINITY, INFINITY, True)
             if best_move is None or value > max_value:

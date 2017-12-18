@@ -97,8 +97,13 @@ class MiniMaxAlgorithm:
         # 2. Out of time
         # 3. It is selective depth game, stop if it is too deep
         # 4. No possible moves
-        if not self.selective_deepening(state) or self.no_more_time() or depth == 0 or 0 == len(possible_moves):
+        if self.no_more_time() or 0 == len(possible_moves):
             return [self.utility(state), None, True] if 0 == len(possible_moves) else [self.utility(state), None, False]
+
+        if depth == 0:
+            if not self.selective_deepening(state):
+                return [self.utility(state), None, False]
+            depth = 1
 
         reached_leaves = True
         if maximizing_player:
@@ -160,8 +165,13 @@ class MiniMaxWithAlphaBetaPruning:
         # 2. Out of time
         # 3. It is selective depth game, stop if it is too deep
         # 4. No possible moves
-        if not self.selective_deepening(state) or self.no_more_time() or depth == 0 or 0 == len(possible_moves):
+        if self.no_more_time() or 0 == len(possible_moves):
             return [self.utility(state), None, True] if 0 == len(possible_moves) else [self.utility(state), None, False]
+
+        if depth == 0:
+            if not self.selective_deepening(state):
+                return [self.utility(state), None, False]
+            depth = 1
 
         reached_leaves = True
         if maximizing_player:
