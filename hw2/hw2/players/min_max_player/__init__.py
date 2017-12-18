@@ -2,7 +2,7 @@ import time
 from Reversi.consts import *
 from abstract import AbstractPlayer
 from utils import MiniMaxAlgorithm
-from players.better_player import Player as simplePlayer
+from players.simple_player import Player as simplePlayer
 import abstract
 
 class Player(AbstractPlayer):
@@ -45,7 +45,7 @@ class Player(AbstractPlayer):
 
     def split_time_not_equally(self, time_remaining):
         sum_of_remaining_turns = sum(range(self.turns_remaining_in_round + 1))
-        return time_remaining * (1-(self.turns_remaining_in_round / sum_of_remaining_turns))
+        return time_remaining * (self.turns_remaining_in_round / sum_of_remaining_turns)
 
     def get_move(self, game_state, possible_moves):
         depth = 0
