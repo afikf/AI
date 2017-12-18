@@ -3,7 +3,7 @@ import time
 from Reversi.consts import PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY, PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY
 from abstract import AbstractPlayer
 from utils import MiniMaxWithAlphaBetaPruning
-from players.better_player import Player as simplePlayer
+from players.simple_player import Player as simplePlayer
 
 INFINITY = float(6000)
 

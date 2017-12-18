@@ -1,6 +1,7 @@
 import abstract
 from utils import INFINITY, run_with_limited_time, ExceededTimeError
-from Reversi.consts import EM, OPPONENT_COLOR, BOARD_COLS, BOARD_ROWS, O_PLAYER, X_PLAYER, NUM_OF_MOVES_IN_OPENING_BOOK
+from Reversi.consts import EM, OPPONENT_COLOR, BOARD_COLS, BOARD_ROWS, O_PLAYER, X_PLAYER, NUM_OF_MOVES_IN_OPENING_BOOK, \
+    TIE
 import time
 import copy
 import pickle
@@ -92,7 +93,12 @@ class Player(abstract.AbstractPlayer):
 
     def utility(self, state):
         if len(state.get_possible_moves()) == 0:
-            return INFINITY if state.curr_player != self.color else -INFINITY
+            winner = state.get_winner()
+            if winner == self.color:
+                return INFINITY
+            else:
+                return -INFINITY
+
         my_in_corner = 0
         opp_in_corner = 0
         my_front = 0
