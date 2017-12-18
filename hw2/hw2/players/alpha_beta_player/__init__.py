@@ -1,6 +1,6 @@
 import time
 
-from Reversi.consts import PERCENTAGE_OF_TIME_TO_SPLIT_EQUALY, PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALY
+from Reversi.consts import PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY, PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY
 from abstract import AbstractPlayer
 from utils import MiniMaxWithAlphaBetaPruning
 from players.better_player import Player as simplePlayer
@@ -35,8 +35,8 @@ class Player(AbstractPlayer):
         return False
 
     def time_for_step(self):
-        return self.split_time_equally(PERCENTAGE_OF_TIME_TO_SPLIT_EQUALY * self.time_remaining_in_round) + \
-               self.split_time_not_equally(PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALY * self.time_remaining_in_round) - 0.05
+        return self.split_time_equally(PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY * self.time_remaining_in_round) + \
+               self.split_time_not_equally(PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY * self.time_remaining_in_round) - 0.05
 
     def split_time_equally(self, time_remaining):
         return time_remaining/self.turns_remaining_in_round
