@@ -166,7 +166,7 @@ class MiniMaxWithAlphaBetaPruning:
             for move in possible_moves:
                 next_state = copy.deepcopy(state)
                 next_state.perform_move(move[0], move[1])
-                value, cur_move = self.search(next_state, depth - 1, alpha, beta, False)
+                value, _ = self.search(next_state, depth - 1, alpha, beta, False)
                 if value > cur_max:
                     cur_max = value
                     max_move = move
@@ -179,7 +179,7 @@ class MiniMaxWithAlphaBetaPruning:
         for move in possible_moves:
             next_state = copy.deepcopy(state)
             next_state.perform_move(move[0], move[1])
-            value, cur_move = self.search(next_state, depth - 1, alpha, beta, True)
+            value, _ = self.search(next_state, depth - 1, alpha, beta, True)
             cur_min = min(cur_min, value)
             if cur_min <= alpha:
                 return -INFINITY, None
