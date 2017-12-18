@@ -98,28 +98,31 @@ class MiniMaxAlgorithm:
         # 3. It is selective depth game, stop if it is too deep
         # 4. No possible moves
         if not self.selective_deepening(state) or self.no_more_time() or depth == 0 or 0 == len(possible_moves):
-            return self.utility(state), None
+            return [self.utility(state), None, True] if 0 == len(possible_moves) else [self.utility(state), None, False]
 
+        reached_leaves = True
         if maximizing_player:
             cur_max = -1*INFINITY
             max_move = None
             for move in possible_moves:
                 next_state = copy.deepcopy(state)
                 next_state.perform_move(move[0], move[1])
-                value, cur_move = self.search(next_state, depth - 1, False)
+                [value, _, cur_reached_leaves] = self.search(next_state, depth - 1, False)
+                reached_leaves = reached_leaves and cur_reached_leaves
                 if value > cur_max:
                     cur_max = value
                     max_move = move
-            return cur_max, max_move
+            return cur_max, max_move, reached_leaves
 
         # minimizing player
         cur_min = INFINITY
         for move in possible_moves:
             next_state = copy.deepcopy(state)
             next_state.perform_move(move[0], move[1])
-            value, cur_move = self.search(next_state, depth - 1, True)
+            [value, _, cur_reached_leaves] = self.search(next_state, depth - 1, True)
+            reached_leaves = reached_leaves and cur_reached_leaves
             cur_min = min(cur_min, value)
-        return cur_min, None
+        return cur_min, None, reached_leaves
 
 class MiniMaxWithAlphaBetaPruning:
 
@@ -158,29 +161,32 @@ class MiniMaxWithAlphaBetaPruning:
         # 3. It is selective depth game, stop if it is too deep
         # 4. No possible moves
         if not self.selective_deepening(state) or self.no_more_time() or depth == 0 or 0 == len(possible_moves):
-            return self.utility(state), None
+            return [self.utility(state), None, True] if 0 == len(possible_moves) else [self.utility(state), None, False]
 
+        reached_leaves = True
         if maximizing_player:
             cur_max = -1*INFINITY
             max_move = None
             for move in possible_moves:
                 next_state = copy.deepcopy(state)
                 next_state.perform_move(move[0], move[1])
-                value, _ = self.search(next_state, depth - 1, alpha, beta, False)
+                [value, _, cur_reached_leaves] = self.search(next_state, depth - 1, alpha, beta, False)
+                reached_leaves = reached_leaves and cur_reached_leaves
                 if value > cur_max:
                     cur_max = value
                     max_move = move
                 if cur_max >= beta:
-                    return INFINITY, move
-            return cur_max, max_move
+                    return INFINITY, move, reached_leaves
+            return cur_max, max_move, reached_leaves
 
         # minimizing player
         cur_min = INFINITY
         for move in possible_moves:
             next_state = copy.deepcopy(state)
             next_state.perform_move(move[0], move[1])
-            value, _ = self.search(next_state, depth - 1, alpha, beta, True)
+            [value, _, cur_reached_leaves] = self.search(next_state, depth - 1, alpha, beta, True)
             cur_min = min(cur_min, value)
+            reached_leaves = reached_leaves and cur_reached_leaves
             if cur_min <= alpha:
-                return -INFINITY, None
-        return cur_min, None
+                return -INFINITY, None, reached_leaves
+        return cur_min, None, reached_leaves
