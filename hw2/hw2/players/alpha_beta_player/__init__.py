@@ -3,6 +3,7 @@ import time
 from abstract import AbstractPlayer
 from utils import MiniMaxWithAlphaBetaPruning
 from players.better_player import Player as simplePlayer
+from players.min_max_player import Player as min_max_player
 
 INFINITY = float(6000)
 
@@ -19,36 +20,25 @@ class Player(AbstractPlayer):
         self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
 
         self.simple = simplePlayer(setup_time, player_color, time_per_k_turns, k)
+        self.min_max = min_max_player(setup_time, player_color, time_per_k_turns, k)
 
         self.algorithm = MiniMaxWithAlphaBetaPruning(utility=self.simple.utility, my_color=self.color,
-                                     no_more_time=self.no_more_time, selective_deepening=self.alwaysTrue)
+                                     no_more_time=self.min_max.no_more_time, selective_deepening=self.alwaysTrue)
 
     def alwaysTrue(self, state):
         return True
 
-    def no_more_time(self):
-        time_passed = (time.time() - self.clock)
-        self.time_for_current_move -= time_passed
-        self.time_remaining_in_round -= time_passed
-        self.clock = time.time()
-        if self.time_for_current_move <= 0.05 or self.time_remaining_in_round <= 0.05:
-            return True
-        return False
-
-    def time_for_step(self):
-        sum_of_remaining_turns = sum(range(self.turns_remaining_in_round+1))
-        return self.time_remaining_in_round*(self.turns_remaining_in_round/sum_of_remaining_turns)
-
     def get_move(self, game_state, possible_moves):
         depth = 0
-        self.time_for_current_move = self.time_for_step()
+        self.time_for_current_move = self.min_max.time_for_step()
         self.clock = time.time()
 
         best_move = None
         max_value = 0
-        while not self.no_more_time():
+        reached_leaves = False
+        while not self.min_max.no_more_time() and not reached_leaves:
             depth += 1
-            value, move = self.algorithm.search(game_state, depth, -INFINITY, INFINITY, True)
+            [value, move, reached_leaves] = self.algorithm.search(game_state, depth, -INFINITY, INFINITY, True)
             if best_move is None or value > max_value:
                 max_value = value
                 best_move = move
