@@ -116,6 +116,8 @@ class Player(abstract.AbstractPlayer):
             winner = state.get_winner()
             if winner == self.color:
                 return INFINITY
+            elif winner == TIE:
+                return 0
             else:
                 return -INFINITY
 
