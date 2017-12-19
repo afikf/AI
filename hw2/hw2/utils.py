@@ -6,7 +6,7 @@ from multiprocessing import Queue
 import time
 import copy
 
-INFINITY = float(6000)
+INFINITY = float(6000000)
 
 
 class ExceededTimeError(RuntimeError):

@@ -96,6 +96,8 @@ class Player(abstract.AbstractPlayer):
             winner = state.get_winner()
             if winner == self.color:
                 return INFINITY
+            elif winner == TIE:
+                return 0
             else:
                 return -INFINITY
 
@@ -243,14 +245,16 @@ class Player(abstract.AbstractPlayer):
 
         close_to_corner = -12.5 * (my_close_to_corner - opp_close_to_corner)
 
-        return (10 * tiles) + (801.724 * corners) + (382.026 * close_to_corner) + (78.922 * options) + (74.396 * front)\
+        score = (10 * tiles) + (801.724 * corners) + (382.026 * close_to_corner) + (78.922 * options) + (74.396 * front)\
                + (10 * d)
+
+        return score
 
 
 def xy_to_a1(move):
-    return chr(ord('a') + int(move[0])) + str(int(move[1]) + 1)
+    return chr(ord('a') + (7-int(move[0]))) + str(int(move[1]) + 1)
 
 
 def a1_to_xy(move):
-    return ord(move[0]) - ord('a'), int(move[1]) - 1
+    return 7-(ord(move[0]) - ord('a')), int(move[1]) - 1
 
