@@ -2,8 +2,10 @@ from subprocess import call
 import threading
 import re
 from matplotlib import pyplot as plt
+import os
+import shutil
 
-players = ['simple_player', 'alpha_beta_player', 'min_max_player', 'better_player']
+players = ['simple_player', 'alpha_beta_player', 'min_max_player', 'better_player', 'competition_player']
 times = ['2', '10', '50']
 
 def callto(time, p1, p2):
@@ -16,6 +18,7 @@ def callto(time, p1, p2):
         call(['python3', 'run_game.py', '2', time, '5', 'n', p1, p2], stdout=file)
 
     file.close()
+
 
 def run_threads():
     threads = []
@@ -32,14 +35,10 @@ def run_threads():
     for t in threads:
         t.join()
 
-def main():
 
-    call(['mkdir', 'temp'])
-    final = open('final.csv', 'w')
-    final_table = open('final_table.csv', 'w')
-
+def create_fianl_reult_and_csv_file():
     final_result = {player: {t: 0 for t in times} for player in players}
-
+    final = open('final.csv', 'w')
     for p1 in players:
         for p2 in players:
             if p1 == p2:
@@ -58,11 +57,17 @@ def main():
                         elif winner == p2:
                             p1_score = '0'
                             p2_score = '1'
-                        final_result[p1][time] += int(p1_score)
-                        final_result[p2][time] += int(p2_score)
+                        final_result[p1][time] += float(p1_score)
+                        final_result[p2][time] += float(p2_score)
                         line_to_print = p1 + ',' + p2 + ',' + time + ',' + p1_score + ',' + p2_score + '\n'
                         final.write(line_to_print)
 
+    final.close()
+    return final_result
+
+
+def create_graph_and_final_table(final_result):
+    final_table = open('final_table.csv', 'w')
     headers = 't = 2, t = 10, t = 50, player_name\n'
     final_table.write(headers)
     plt.figure()
@@ -76,12 +81,24 @@ def main():
             line += str(point) + ','
         line += player + '\n'
         final_table.write(line)
-        plt.plot(x, y, '*', label=player)
+        plt.plot(x, y, '.-', label=player)
+    final_table.close()
     plt.legend()
     plt.show()
 
-    final.close()
-    final_table.close()
+
+def main():
+
+    if not os.path.isdir('temp'):
+        os.mkdir('temp')
+
+    run_threads()
+    final_result = create_fianl_reult_and_csv_file()
+    create_graph_and_final_table(final_result)
+
+    if os.path.isdir('temp'):
+        shutil.rmtree('temp')
+
 
 if __name__ == '__main__':
     main()
