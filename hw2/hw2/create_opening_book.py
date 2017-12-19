@@ -23,8 +23,6 @@ def create_file(best_openings, file_name, b_create_file):
 
     dict_seq_to_move = {key: value[0] for key, value in dict_of_best_moves_with_values.items()}
 
-    print(dict_seq_to_move)
-
     if b_create_file:
         with open(file_name, 'wb') as target:
             pickle.dump(dict_seq_to_move, target, protocol=pickle.HIGHEST_PROTOCOL)
@@ -71,10 +69,10 @@ def create_better_opening_book(b_create_file):
         update_dict(dict=second_player_dict_openings_to_wins, line=line, win=line[-7] == '-')
 
     best_openings = dict(sorted(first_player_dict_openings_to_wins.items(), key=operator.itemgetter(1), reverse=True)[
-                         :int(NUMBER_OF_GAMES / 2)])
+                         :int(NUMBER_OF_GAMES)])
     best_openings.update(dict(
         sorted(second_player_dict_openings_to_wins.items(), key=operator.itemgetter(1), reverse=True)[
-        :int(NUMBER_OF_GAMES / 2)]))
+        :int(NUMBER_OF_GAMES)]))
 
     return create_file(best_openings, 'opening_book_better.pkl', b_create_file=b_create_file)
 
