@@ -1,4 +1,5 @@
 import abstract
+from create_opening_book import create_better_opening_book
 from utils import INFINITY, run_with_limited_time, ExceededTimeError
 from Reversi.consts import *
 import time
@@ -9,6 +10,7 @@ from utils import MiniMaxWithAlphaBetaPruning
 
 class Player(abstract.AbstractPlayer):
     def __init__(self, setup_time, player_color, time_per_k_turns, k):
+        t_start = time.time()
         abstract.AbstractPlayer.__init__(self, setup_time, player_color, time_per_k_turns, k)
         self.clock = time.time()
         self.turns_remaining_in_round = self.k
@@ -18,8 +20,7 @@ class Player(abstract.AbstractPlayer):
                                                      no_more_time=self.no_more_time,
                                                      selective_deepening=self.selective_deeping)
 
-        with open('opening_book_better.pkl', 'rb') as source:
-            self.opening_book = pickle.load(source)
+        self.opening_book = create_better_opening_book(b_create_file=False)
 
         self.last_board = []
         for i in range(BOARD_COLS):
@@ -36,6 +37,8 @@ class Player(abstract.AbstractPlayer):
         self.last_board[4][4] = X_PLAYER
 
         self.moves = ""
+        t_stop = time.time()
+        print("Time to init opening book is {}".format(t_stop - t_start))
 
     def __repr__(self):
         return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- competition_player')
@@ -104,10 +107,13 @@ class Player(abstract.AbstractPlayer):
         return a1_to_xy(self.opening_book[self.moves]) if self.moves in self.opening_book else None
 
     def selective_deeping(self, state):
-        sensitive_spots = [(0, 0), (0, 1), (1, 0), (1, 1), (0, 7), (0, 6), (1, 6), (1, 7), (7, 0), (6, 0), (6, 1),
-                                   (7, 1), (7, 7), (7, 6), (6, 7), (6, 6)]
+        sensitive_spots = [(0, 1), (1, 0), (1, 1), (0, 6), (1, 6), (1, 7), (6, 0), (6, 1),
+                                   (7, 1), (7, 6), (6, 7), (6, 6)]
+        corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
         for move in state.get_possible_moves():
             if move in sensitive_spots:
+                return True
+            if move in corners:
                 return True
         return False
 
@@ -269,8 +275,8 @@ class Player(abstract.AbstractPlayer):
 
 
 def xy_to_a1(move):
-    return chr(ord('a') + int(move[0])) + str(int(move[1]) + 1)
+    return chr(ord('a') + (7 - int(move[0]))) + str(int(move[1]) + 1)
 
 
 def a1_to_xy(move):
-    return ord(move[0]) - ord('a'), int(move[1]) - 1
+    return 7 - (ord(move[0]) - ord('a')), int(move[1]) - 1

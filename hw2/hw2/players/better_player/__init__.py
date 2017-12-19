@@ -252,9 +252,9 @@ class Player(abstract.AbstractPlayer):
 
 
 def xy_to_a1(move):
-    return chr(ord('a') + (7-int(move[0]))) + str(int(move[1]) + 1)
+    return chr(ord('a') + (7 - int(move[0]))) + str(int(move[1]) + 1)
 
 
 def a1_to_xy(move):
-    return 7-(ord(move[0]) - ord('a')), int(move[1]) - 1
+    return 7 - (ord(move[0]) - ord('a')), int(move[1]) - 1
 

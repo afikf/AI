@@ -5,7 +5,8 @@ from Reversi.consts import *
 
 NUMBER_OF_GAMES = 70
 
-def create_file(best_openings, file_name):
+
+def create_file(best_openings, file_name, b_create_file):
     dict_of_best_moves_with_values = {}
 
     for key, value in best_openings.items():
@@ -22,16 +23,19 @@ def create_file(best_openings, file_name):
 
     dict_seq_to_move = {key: value[0] for key, value in dict_of_best_moves_with_values.items()}
 
-    print(dict_seq_to_move)
+    if b_create_file:
+        with open(file_name, 'wb') as target:
+            pickle.dump(dict_seq_to_move, target, protocol=pickle.HIGHEST_PROTOCOL)
 
-    with open(file_name, 'wb') as target:
-        pickle.dump(dict_seq_to_move, target, protocol=pickle.HIGHEST_PROTOCOL)
+    return dict_seq_to_move
+
+
 def create_gamae_book():
     opening_book_file = open('book.gam', 'r')
     openings = {}
 
     for line in opening_book_file.readlines():
-        game = line[:(NUM_OF_MOVES_IN_OPENING_BOOK*3)]
+        game = line[:(NUM_OF_MOVES_IN_OPENING_BOOK * 3)]
         if game in openings:
             openings[game] += 1
         else:
@@ -39,7 +43,8 @@ def create_gamae_book():
 
     best_openings = dict(sorted(openings.items(), key=operator.itemgetter(1), reverse=True)[:NUMBER_OF_GAMES])
 
-    create_file(best_openings, 'opening_book.pkl')
+    create_file(best_openings, 'opening_book.pkl', True)
+
 
 def update_dict(dict, line, win):
     if line in dict:
@@ -47,7 +52,8 @@ def update_dict(dict, line, win):
     else:
         dict[line] = 1 if win else -1
 
-def create_better_opening_book():
+
+def create_better_opening_book(b_create_file):
     opening_book_file = open('book.gam', 'r')
 
     first_player_dict_openings_to_wins = {}
@@ -62,11 +68,15 @@ def create_better_opening_book():
         update_dict(dict=first_player_dict_openings_to_wins, line=line, win=line[-7] == '+')
         update_dict(dict=second_player_dict_openings_to_wins, line=line, win=line[-7] == '-')
 
-    best_openings = dict(sorted(first_player_dict_openings_to_wins.items(), key=operator.itemgetter(1), reverse=True)[:int(NUMBER_OF_GAMES/2)])
-    best_openings.update(dict(sorted(second_player_dict_openings_to_wins.items(), key=operator.itemgetter(1), reverse=True)[:int(NUMBER_OF_GAMES/2)]))
+    best_openings = dict(sorted(first_player_dict_openings_to_wins.items(), key=operator.itemgetter(1), reverse=True)[
+                         :int(NUMBER_OF_GAMES)])
+    best_openings.update(dict(
+        sorted(second_player_dict_openings_to_wins.items(), key=operator.itemgetter(1), reverse=True)[
+        :int(NUMBER_OF_GAMES)]))
 
-    create_file(best_openings, 'opening_book_better.pkl')
+    return create_file(best_openings, 'opening_book_better.pkl', b_create_file=b_create_file)
+
 
 if __name__ == '__main__':
     create_gamae_book()
-    create_better_opening_book()
+    create_better_opening_book(b_create_file=True)

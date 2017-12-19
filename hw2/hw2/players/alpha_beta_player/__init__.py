@@ -49,10 +49,13 @@ class Player(AbstractPlayer):
         return time_remaining * (self.turns_remaining_in_round / sum_of_remaining_turns)
 
     def selective_deeping(self, state):
-        sensitive_spots = [(0, 0), (0, 1), (1, 0), (1, 1), (0, 7), (0, 6), (1, 6), (1, 7), (7, 0), (6, 0), (6, 1),
-                                   (7, 1), (7, 7), (7, 6), (6, 7), (6, 6)]
+        sensitive_spots = [(0, 1), (1, 0), (1, 1), (0, 6), (1, 6), (1, 7), (6, 0), (6, 1),
+                                   (7, 1), (7, 6), (6, 7), (6, 6)]
+        corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
         for move in state.get_possible_moves():
             if move in sensitive_spots:
+                return True
+            if move in corners:
                 return True
         return False
 
@@ -64,7 +67,7 @@ class Player(AbstractPlayer):
         best_move = None
         max_value = 0
         reached_leaves = False
-        while not self.no_more_time():
+        while not self.no_more_time() and not reached_leaves:
             depth += 1
             [value, move, reached_leaves] = self.algorithm.search(game_state, depth, -INFINITY, INFINITY, True)
             if best_move is None or value > max_value:
