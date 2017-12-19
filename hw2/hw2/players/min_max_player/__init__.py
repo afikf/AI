@@ -35,7 +35,7 @@ class Player(AbstractPlayer):
 
     def time_for_step(self):
         return (self.split_time_equally(PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY * self.time_remaining_in_round) + \
-               self.split_time_not_equally(PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY * self.time_remaining_in_round))*0.098
+               self.split_time_not_equally(PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY * self.time_remaining_in_round))*0.097
 
     def split_time_equally(self, time_remaining):
         return time_remaining/self.turns_remaining_in_round

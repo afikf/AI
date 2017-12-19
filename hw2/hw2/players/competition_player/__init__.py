@@ -10,7 +10,6 @@ from utils import MiniMaxWithAlphaBetaPruning
 
 class Player(abstract.AbstractPlayer):
     def __init__(self, setup_time, player_color, time_per_k_turns, k):
-        t_start = time.time()
         abstract.AbstractPlayer.__init__(self, setup_time, player_color, time_per_k_turns, k)
         self.clock = time.time()
         self.turns_remaining_in_round = self.k
@@ -37,8 +36,6 @@ class Player(abstract.AbstractPlayer):
         self.last_board[4][4] = X_PLAYER
 
         self.moves = ""
-        t_stop = time.time()
-        print("Time to init opening book is {}".format(t_stop - t_start))
 
     def __repr__(self):
         return '{} {}'.format(abstract.AbstractPlayer.__repr__(self), '- competition_player')

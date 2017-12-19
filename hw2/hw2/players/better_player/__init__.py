@@ -15,7 +15,7 @@ class Player(abstract.AbstractPlayer):
         self.time_remaining_in_round = self.time_per_k_turns
         self.time_for_current_move = self.time_remaining_in_round / self.turns_remaining_in_round - 0.05
 
-        with open('opening_book_better.pkl', 'rb') as source:
+        with open('opening_book.pkl', 'rb') as source:
             self.opening_book = pickle.load(source)
 
         self.last_board = []
