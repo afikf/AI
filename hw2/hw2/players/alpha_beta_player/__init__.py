@@ -67,7 +67,7 @@ class Player(AbstractPlayer):
         best_move = None
         max_value = 0
         reached_leaves = False
-        while not self.no_more_time():
+        while not self.no_more_time() and not reached_leaves:
             depth += 1
             [value, move, reached_leaves] = self.algorithm.search(game_state, depth, -INFINITY, INFINITY, True)
             if best_move is None or value > max_value:
