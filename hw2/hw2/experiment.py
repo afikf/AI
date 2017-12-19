@@ -14,8 +14,8 @@ def callto(time, p1, p2):
     file = open(file_name, 'w+')
 
     for _ in range(5):
-        print('python3 run_game.py 2 {} 5 n {} {}'.format(time, p1, p2))
-        call(['python3', 'run_game.py', '2', time, '5', 'n', p1, p2], stdout=file)
+        print('run_game.py 2 {} 5 n {} {}'.format(time, p1, p2))
+        call(['run_game.py', '2', time, '5', 'n', p1, p2], stdout=file, shell=True)
 
     file.close()
 
@@ -67,7 +67,7 @@ def create_fianl_reult_and_csv_file():
 
 
 def create_graph_and_final_table(final_result):
-    final_table = open('final_table.csv', 'w')
+    final_table = open('final_table_with_full_selective_deeping.csv', 'w')
     headers = 't = 2, t = 10, t = 50, player_name\n'
     final_table.write(headers)
     plt.figure()
