@@ -39,7 +39,7 @@ class Player(AbstractPlayer):
 
     def time_for_step(self):
         return (self.split_time_equally(PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY * self.time_remaining_in_round) + \
-               self.split_time_not_equally(PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY * self.time_remaining_in_round))*0.097
+               self.split_time_not_equally(PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY * self.time_remaining_in_round))*0.97
 
     def split_time_equally(self, time_remaining):
         return time_remaining/self.turns_remaining_in_round
@@ -53,8 +53,8 @@ class Player(AbstractPlayer):
                                    (7, 1), (7, 6), (6, 7), (6, 6)]
         corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
         for move in state.get_possible_moves():
-            if move in sensitive_spots:
-                return True
+            # if move in sensitive_spots:
+            #     return True
             if move in corners:
                 return True
         return False
