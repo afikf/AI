@@ -1,6 +1,8 @@
 from subprocess import call
 import threading
 import re
+from time import sleep
+
 from matplotlib import pyplot as plt
 import os
 import shutil
@@ -21,19 +23,18 @@ def callto(time, p1, p2):
 
 
 def run_threads():
-    threads = []
-
-    for p1 in players:
-        for p2 in players:
-            if p1 == p2:
-                continue
-            for time in times:
+    for time in times:
+        for p1 in players:
+            threads = []
+            for p2 in players:
+                if p1 == p2:
+                    continue
                 t = threading.Thread(target=callto, args=[time, p1, p2])
                 threads.append(t)
                 t.start()
 
-    for t in threads:
-        t.join()
+            for t in threads:
+                t.join()
 
 
 def create_fianl_reult_and_csv_file():
@@ -47,7 +48,6 @@ def create_fianl_reult_and_csv_file():
                 file_name = 'temp/' + p1 + p2+time+'.txt'
                 with open(file_name, 'r') as file:
                     for line in file.readlines():
-                        print('line is:{}'.format(line))
                         winner = re.split('\n', line)[0].split(' ')[-1]
                         p1_score = '0.5'
                         p2_score = '0.5'
@@ -67,7 +67,7 @@ def create_fianl_reult_and_csv_file():
 
 
 def create_graph_and_final_table(final_result):
-    final_table = open('final_table_with_only_corners.csv', 'w')
+    final_table = open('final_table_with_only_corners_for_everyone_but_comp.csv', 'w')
     headers = 't = 2, t = 10, t = 50, player_name\n'
     final_table.write(headers)
     plt.figure()
