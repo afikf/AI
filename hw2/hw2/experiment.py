@@ -67,7 +67,7 @@ def create_fianl_reult_and_csv_file():
 
 
 def create_graph_and_final_table(final_result):
-    final_table = open('final_table_with_only_corners_for_everyone_but_comp.csv', 'w')
+    final_table = open('final_table_with_full_selective_deeping.csv', 'w')
     headers = 't = 2, t = 10, t = 50, player_name\n'
     final_table.write(headers)
     plt.figure()
