@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 import os
 import shutil
 
-players = ['simple_player', 'alpha_beta_player', 'min_max_player', 'better_player', 'competition_player']
+players = ['simple_player', 'alpha_beta_player', 'min_max_player', 'better_player']
 times = ['2', '10', '50']
 
 def callto(time, p1, p2):
@@ -67,7 +67,7 @@ def create_fianl_reult_and_csv_file():
 
 
 def create_graph_and_final_table(final_result):
-    final_table = open('final_table_with_full_selective_deeping.csv', 'w')
+    final_table = open('final_table_everyone_without_corners.csv', 'w')
     headers = 't = 2, t = 10, t = 50, player_name\n'
     final_table.write(headers)
     plt.figure()

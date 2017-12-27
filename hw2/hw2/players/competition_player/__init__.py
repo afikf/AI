@@ -108,8 +108,8 @@ class Player(abstract.AbstractPlayer):
                                    (7, 1), (7, 6), (6, 7), (6, 6)]
         corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
         for move in state.get_possible_moves():
-            # if move in sensitive_spots:
-            #     return True
+            if move in sensitive_spots:
+                return True
             if move in corners:
                 return True
         return False
