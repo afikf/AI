@@ -1,5 +1,5 @@
 t = 2, t = 10, t = 50, player_name
-8.0,5.0,5.0,simple_player
-23.0,27.0,26.0,alpha_beta_player
-26.5,22.0,24.0,min_max_player
-12.5,6.0,5.0,better_player
+9.0,5.0,5.0,simple_player
+16.0,29.0,25.0,alpha_beta_player
+20.0,18.0,25.0,min_max_player
+15.0,8.0,5.0,better_player

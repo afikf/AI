@@ -1,0 +1,5 @@
+t = 2, t = 10, t = 50, player_name
+5.0,5.0,5.0,simple_player
+25.0,26.0,27.0,alpha_beta_player
+25.0,24.0,23.0,min_max_player
+5.0,5.0,5.0,better_player
