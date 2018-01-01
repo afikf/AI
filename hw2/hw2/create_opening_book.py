@@ -1,10 +1,9 @@
 import operator
 import pickle
 import re
-from Reversi.consts import *
 
 NUMBER_OF_GAMES = 70
-
+NUM_OF_MOVES_IN_OPENING_BOOK = 10
 
 def create_file(best_openings, file_name, b_create_file):
     dict_of_best_moves_with_values = {}

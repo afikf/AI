@@ -1,11 +1,14 @@
 import abstract
 from utils import INFINITY, run_with_limited_time, ExceededTimeError
-from Reversi.consts import EM, OPPONENT_COLOR, BOARD_COLS, BOARD_ROWS, O_PLAYER, X_PLAYER, NUM_OF_MOVES_IN_OPENING_BOOK, \
+from Reversi.consts import EM, OPPONENT_COLOR, BOARD_COLS, BOARD_ROWS, O_PLAYER, X_PLAYER, \
     TIE
 import time
 import copy
 import pickle
-from collections import defaultdict
+
+NUM_OF_MOVES_IN_OPENING_BOOK = 10
+PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY = 0.2
+PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY = 1 - PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY
 
 class Player(abstract.AbstractPlayer):
     def __init__(self, setup_time, player_color, time_per_k_turns, k):

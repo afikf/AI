@@ -23,7 +23,3 @@ OPPONENT_COLOR = {
 #===============================================================================
 # Other consts
 #===============================================================================
-
-NUM_OF_MOVES_IN_OPENING_BOOK = 10
-PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY = 1
-PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY = 1 - PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY

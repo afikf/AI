@@ -1,11 +1,12 @@
 import time
 
-from Reversi.consts import PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY, PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY
 from abstract import AbstractPlayer
 from utils import MiniMaxWithAlphaBetaPruning, INFINITY
 from players.better_player import Player as simplePlayer
 import abstract
 
+PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY = 0.2
+PERCENTAGE_OF_TIME_TO_SPLIT_NOT_EQUALLY = 1 - PERCENTAGE_OF_TIME_TO_SPLIT_EQUALLY
 
 class Player(AbstractPlayer):
     def __init__(self, setup_time, player_color, time_per_k_turns, k):
