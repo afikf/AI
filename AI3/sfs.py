@@ -23,6 +23,7 @@ def sfs(x, y, k, clf, score):
 
         samples = np.asarray(x)
         samples = samples[:, indices + [index]]
+        clf.fit(samples, y)
         utility = score(clf, samples, y)
 
         if utility > max_utility:
