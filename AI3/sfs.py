@@ -14,7 +14,7 @@ def sfs(x, y, k, clf, score):
 
     indices = sfs(x, y, k - 1, clf, score)
 
-    max_utility = None
+    max_utility = 0.0
     max_index = 0
 
     for index in range(len(x[0])):
