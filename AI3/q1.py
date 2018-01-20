@@ -37,17 +37,26 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted label')
 
 
+#parse data set
 func = lambda x: 0.0 if x == b'False' else 1.0
 all_data = loadtxt('flare.csv', delimiter=',', skiprows=1, converters={32: func})
 target = all_data[: , -1]
 data = all_data[:, 0:-1]
+
 clf = DecisionTreeClassifier(criterion="entropy")
+
+# calculate the success rate and the avarage
 succ_rate = cross_val_score(clf, data, target, cv=4)
 target_predict = cross_val_predict(clf, data, target, cv=4)
 succ_rate_avg = np.average(succ_rate)
+
+# create the confusion matrix
 conf_mat = confusion_matrix(target, target_predict)
+
 print(succ_rate_avg)
 print(conf_mat)
+
+# create the diagram
 plt.figure()
 class_names = ['True', 'False']
 plot_confusion_matrix(conf_mat, classes=class_names,
