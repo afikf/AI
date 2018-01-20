@@ -14,7 +14,7 @@ data = all_data[:, 0:-1]
 train_x, test_x, train_y, test_y = train_test_split(data, target, test_size=0.25, random_state=100)
 
 # under fitting
-under_clf = DecisionTreeClassifier(max_depth=1)
+under_clf = DecisionTreeClassifier(max_depth=1, criterion="")
 under_clf.fit(train_x, train_y)
 under_train_succ_rate = under_clf.score(train_x, train_y)
 under_test_succ_rate = under_clf.score(test_x, test_y)

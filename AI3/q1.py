@@ -17,11 +17,6 @@ def plot_confusion_matrix(cm, classes,
     """
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
-
-    print(cm)
 
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
@@ -51,7 +46,7 @@ succ_rate = cross_val_score(clf, data, target, cv=4)
 target_predict = cross_val_predict(clf, data, target, cv=4)
 succ_rate_avg = np.average(succ_rate)
 conf_mat = confusion_matrix(target, target_predict)
-
+print(succ_rate_avg)
 print(conf_mat)
 plt.figure()
 class_names = ['True', 'False']
