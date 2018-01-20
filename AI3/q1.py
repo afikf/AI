@@ -51,22 +51,13 @@ succ_rate = cross_val_score(clf, data, target, cv=4)
 target_predict = cross_val_predict(clf, data, target, cv=4)
 succ_rate_avg = np.average(succ_rate)
 conf_mat = confusion_matrix(target, target_predict)
-labels = ('True Negative', 'False Positive', 'False Negative', 'True Positive')
-y_pos = np.arange(len(labels))
-results = (conf_mat.reshape((1, 4))).tolist()[0]
-plt.bar(y_pos, results, align='center', alpha=0.5)
-plt.xticks(y_pos, labels)
-plt.title('Confusion Matrix')
-print(succ_rate_avg)
+
 print(conf_mat)
 plt.figure()
 class_names = ['True', 'False']
 plot_confusion_matrix(conf_mat, classes=class_names,
                       title='Confusion matrix, without normalization')
 plt.show()
-
-a=DecisionTreeClassifier()
-a.fit()
 
 
 
