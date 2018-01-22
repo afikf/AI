@@ -37,6 +37,6 @@ test_set.insert(4, 'clarity', round_pred)
 test_set['cut'] = test_set['cut'].map(lambda x: rev_cut_map[x])
 test_set['color'] = test_set['color'].map(lambda x: rev_color_map[x])
 test_set['clarity'] = test_set['clarity'].map(lambda x: rev_clarity_map[x])
-headr = ['carat','cut','color','depth','table','price','x','y','z']
+headr = ['carat','cut','color','clarity','depth','table','price','x','y','z']
 test_set.to_csv('labeled_diamonds.csv', columns=headr)
 a=1
